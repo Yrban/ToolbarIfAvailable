@@ -1,0 +1,26 @@
+@available(iOS 15, *)
+struct ToolbarAvailableViewModifier<V: View>: ViewModifier {
+    var item: V
+    
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    item
+                }
+            }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func keyboardToolbarIfAvailable<V: View>(_ item: V) -> some View {
+        if #available(iOS 15, *) {
+            self
+                .modifier(ToolbarAvailableViewModifier(item: item))
+        }
+        else {
+            self
+        }
+    }
+}
