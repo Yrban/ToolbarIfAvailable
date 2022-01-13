@@ -1,11 +1,27 @@
-@available(iOS 15, *)
-struct ToolbarAvailableViewModifier<V: View>: ViewModifier {
+@available(iOS 14, *)
+struct ToolbarAvailable14ViewModifier<V: View>: ViewModifier {
+    var placement: ToolbarItemPlacement
     var item: V
     
     func body(content: Content) -> some View {
         content
             .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
+                ToolbarItemGroup(placement: placement) {
+                    item
+                }
+            }
+    }
+}
+
+@available(iOS 15, *)
+struct ToolbarAvailable15ViewModifier<V: View>: ViewModifier {
+    var placement: ToolbarItemPlacement
+    var item: V
+    
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItemGroup(placement: placement) {
                     item
                 }
             }
@@ -14,12 +30,14 @@ struct ToolbarAvailableViewModifier<V: View>: ViewModifier {
 
 extension View {
     @ViewBuilder
-    func keyboardToolbarIfAvailable<V: View>(_ item: V) -> some View {
-        if #available(iOS 15, *) {
+    func toolbarIfAvailable<V: View>(placement: ToolbarItemPlacement, _ item: V) -> some View {
+        if #available(iOS 14, *) {
             self
-                .modifier(ToolbarAvailableViewModifier(item: item))
-        }
-        else {
+                .modifier(ToolbarAvailable14ViewModifier(placement: placement, item: item))
+        } else if #available(iOS 15, *) {
+            self
+                .modifier(ToolbarAvailable15ViewModifier(placement: placement, item: item))
+        } else {
             self
         }
     }
