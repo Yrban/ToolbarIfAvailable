@@ -1,8 +1,8 @@
 @available(iOS 14, *)
-struct ToolbarAvailable14ViewModifier<V: View>: ViewModifier {
+struct ToolbarAvailable14ViewModifier<V>: ViewModifier where V: View {
     var placement: ToolbarItemPlacement
     var item: V
-    
+
     func body(content: Content) -> some View {
         content
             .toolbar {
@@ -14,7 +14,7 @@ struct ToolbarAvailable14ViewModifier<V: View>: ViewModifier {
 }
 
 @available(iOS 15, *)
-struct ToolbarAvailable15ViewModifier<V: View>: ViewModifier {
+struct ToolbarAvailable15ViewModifier<V>: ViewModifier where V: View {
     var placement: ToolbarItemPlacement
     var item: V
     
@@ -30,15 +30,18 @@ struct ToolbarAvailable15ViewModifier<V: View>: ViewModifier {
 
 extension View {
     @ViewBuilder
-    func toolbarIfAvailable<V: View>(placement: ToolbarItemPlacement, _ item: V) -> some View {
+    func toolbarIfAvailable<V>(placement: ToolbarItemPlacement, _ item: @escaping () -> V) -> some View where V: View {
         if #available(iOS 14, *) {
             self
-                .modifier(ToolbarAvailable14ViewModifier(placement: placement, item: item))
-        } else if #available(iOS 15, *) {
+                .modifier(ToolbarAvailable14ViewModifier(placement: placement, item: item()))
+        }
+        if #available(iOS 15, *) {
             self
-                .modifier(ToolbarAvailable15ViewModifier(placement: placement, item: item))
-        } else {
+                .modifier(ToolbarAvailable15ViewModifier(placement: placement, item: item()))
+        }
+        else {
             self
         }
     }
 }
+
