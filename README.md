@@ -5,8 +5,8 @@ This view modifier allows you to add a keyboard toolbar for devices running ios 
 
 Usage:
 
-    .toolbarIfAvailable(placement: .keyboard,
+    .toolbarIfAvailable(placement: .keyboard)
         Button("Click") {
             print("Click Pressed")
         }
-    )
+    }
